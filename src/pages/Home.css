@@ -1,0 +1,30 @@
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .accordion-item {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    font-size: 18px;
+    text-align: left;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .accordion-trigger:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .accordion-content {
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+  }
+  
