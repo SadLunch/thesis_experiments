@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { renderToReadableStream } from "react-dom/server.browser";
 import * as THREE from "three";
-import { ARButton } from "three/examples/jsm/webxr/ARButton";
+// import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
 const ThreeInstant = () => {
   const containerRef = useRef(null);
