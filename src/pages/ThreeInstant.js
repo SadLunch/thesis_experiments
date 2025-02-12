@@ -39,7 +39,7 @@ const ThreeInstant = () => {
   
     document.body.appendChild(arButton);
 
-    arButton.style.display = "none";
+    arButton.remove();
 
     renderer.xr.addEventListener("sessionstart", (event) => setArSession(event));
     renderer.xr.addEventListener("sessionend", () => setArSession(null));
@@ -75,9 +75,8 @@ const ThreeInstant = () => {
   };
 
   const exitAR = () => {
-    if (arSession) {
-        arSession.end();
-    }
+    const session = rendererRef.current?.xr.getSession();
+    if (session) session.end();
   }
 
   return (
