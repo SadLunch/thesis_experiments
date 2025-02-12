@@ -4,16 +4,24 @@ import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
 const ThreeInstant = () => {
   const containerRef = useRef(null);
+  const rendererRef = useRef(null);
+  const cameraRef = useRef(null);
+  const sceneRef = useRef(null);
 
   useEffect(() => {
     const container = containerRef.current;
 
-    // Scene, Camera & Renderer
+    // Create Scene, Camera & Renderer
     const scene = new THREE.Scene();
+    sceneRef.current = scene;
+
     const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
+    cameraRef.current = camera;
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
+    rendererRef.current = renderer;
 
     if (container) {
       container.appendChild(renderer.domElement);
@@ -22,47 +30,6 @@ const ThreeInstant = () => {
     // Lighting
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
-
-    // Geometry for Cones
-    const geometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
-
-    // Controller (for screen touch input)
-    const controller = renderer.xr.getController(0);
-    scene.add(controller);
-
-    // Function to spawn a cone 0.3 in front of the camera
-    const spawnCone = () => {
-      const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(0, 0, -0.3).applyMatrix4(camera.matrixWorld);
-      mesh.quaternion.setFromRotationMatrix(camera.matrixWorld);
-      scene.add(mesh);
-    };
-
-    // Create a 3D button
-    const buttonGeometry = new THREE.PlaneGeometry(0.2, 0.1);
-    const buttonMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const button = new THREE.Mesh(buttonGeometry, buttonMaterial);
-    button.position.set(0, -0.2, -0.5); // Place in front of the camera
-    scene.add(button);
-
-    // Raycaster for detecting button clicks
-    const raycaster = new THREE.Raycaster();
-    const tempMatrix = new THREE.Matrix4();
-
-    const onSelect = () => {
-      tempMatrix.identity().extractRotation(controller.matrixWorld);
-      raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-      raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
-
-      const intersects = raycaster.intersectObject(button);
-
-      if (intersects.length > 0) {
-        spawnCone(); // If button is tapped, spawn a cone
-      }
-    };
-
-    controller.addEventListener("select", onSelect);
 
     document.body.appendChild(ARButton.createButton(renderer));
 
@@ -77,14 +44,49 @@ const ThreeInstant = () => {
 
     return () => {
       renderer.setAnimationLoop(null);
-      controller.removeEventListener("select", onSelect);
       if (container) {
         container.removeChild(renderer.domElement);
       }
     };
   }, []);
 
-  return <div ref={containerRef} className="w-full h-screen bg-black" />;
+  // ✅ Move `spawnCone` OUTSIDE `useEffect`
+  const spawnCone = () => {
+    if (!sceneRef.current || !cameraRef.current) return;
+
+    const geometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
+    const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() });
+    const mesh = new THREE.Mesh(geometry, material);
+
+    mesh.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
+    mesh.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
+
+    sceneRef.current.add(mesh);
+  };
+
+  return (
+    <div ref={containerRef} className="w-full h-screen bg-black relative">
+      {/* Floating Button */}
+      <button
+        onClick={spawnCone} // ✅ Now it works!
+        style={{
+          position: "absolute",
+          bottom: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          padding: "10px 20px",
+          fontSize: "16px",
+          background: "blue",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Spawn Cone
+      </button>
+    </div>
+  );
 };
 
 export default ThreeInstant;
