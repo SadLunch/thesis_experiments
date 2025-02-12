@@ -20,7 +20,7 @@ const Home = () => {
               <Accordion.Trigger className="accordion-trigger">{exp.title}</Accordion.Trigger>
               <Accordion.Content className="accordion-content">
                 <p>{exp.description}</p>
-                <Link onClick={() => navigate(exp.path)}>Go to Experiment</Link>
+                <Link to={exp.path}>Go to Experiment</Link>
               </Accordion.Content>
             </Accordion.Item>
           ))}
