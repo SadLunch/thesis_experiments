@@ -50,7 +50,7 @@ const ThreeInstant = () => {
   }, []);
 
   const startAR = async () => {
-    const session = await navigator.xr.requestSession("immerssive-ar", {
+    const session = await navigator.xr.requestSession("immersive-ar", {
       optionalFeatures: ["dom-overlay"], // Allows UI elements to stay visible
       domOverlay: { root: document.body }, // Define where the overlay exists
     });
