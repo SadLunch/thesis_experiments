@@ -33,12 +33,13 @@ const ThreeInstant = () => {
     scene.add(light);
 
     const arButton = ARButton.createButton(renderer, {
-      requiredFeatures: ["hit-test"], // Enables touch interaction
       optionalFeatures: ["dom-overlay"], // Allows UI elements to stay visible
       domOverlay: { root: document.body }, // Define where the overlay exists
     });
   
     document.body.appendChild(arButton);
+
+    arButton.style.display = "none";
 
     renderer.xr.addEventListener("sessionstart", (event) => setArSession(event));
     renderer.xr.addEventListener("sessionend", () => setArSession(null));
@@ -72,6 +73,12 @@ const ThreeInstant = () => {
 
     sceneRef.current.add(mesh);
   };
+
+  const exitAR = () => {
+    if (arSession) {
+        arSession.end();
+    }
+  }
 
   return (
     <div ref={containerRef} className="w-full h-screen bg-black relative">
