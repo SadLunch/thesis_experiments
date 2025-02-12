@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { renderToReadableStream } from "react-dom/server.browser";
 import * as THREE from "three";
 import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
@@ -7,7 +8,7 @@ const ThreeInstant = () => {
   const rendererRef = useRef(null);
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
-  const [arSession, setArSession] = useState(null);
+  const [arSession, setArSession] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -32,18 +33,6 @@ const ThreeInstant = () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
-    const arButton = ARButton.createButton(renderer, {
-      optionalFeatures: ["dom-overlay"], // Allows UI elements to stay visible
-      domOverlay: { root: document.body }, // Define where the overlay exists
-    });
-  
-    document.body.appendChild(arButton);
-
-    arButton.remove();
-
-    renderer.xr.addEventListener("sessionstart", (event) => setArSession(event));
-    renderer.xr.addEventListener("sessionend", () => setArSession(null));
-
     // Animation Loop
     const animate = () => {
       renderer.setAnimationLoop(() => {
@@ -60,6 +49,20 @@ const ThreeInstant = () => {
       }
     };
   }, []);
+
+  const startAR = async () => {
+    const session = await navigator.xr.requestSession("immerssive-ar", {
+      optionalFeatures: ["dom-overlay"], // Allows UI elements to stay visible
+      domOverlay: { root: document.body }, // Define where the overlay exists
+    });
+  
+      await rendererRef.current.xr.setSession(session);
+      setArSession(true);
+
+      session.addEventListener("end", () => {
+        setArSession(false);
+      })
+  }
 
   const spawnCone = () => {
     if (!sceneRef.current || !cameraRef.current) return;
@@ -81,6 +84,29 @@ const ThreeInstant = () => {
 
   return (
     <div ref={containerRef} className="w-full h-screen bg-black relative">
+      {/* Custom Start AR button */}
+      {!arSession && (
+        <button
+          onClick={startAR}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            padding: "15px 25px",
+            fontSize: "18px",
+            background: "green",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            zIndex: 1000,
+          }}
+        >
+          Start AR
+        </button>
+      )}
+
       {/* Custom Back button */}
       {arSession && (
         <button
