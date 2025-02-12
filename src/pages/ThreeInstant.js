@@ -21,18 +21,17 @@ const ThreeInstant = () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
-    const coneGeometry = new THREE.ConeGeometry(0.1, 0.2, 32);
-    const coneMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    const geometry = new THREE.CylinderGeometry( 0, 0.05, 0.2, 32 ).rotateX( Math.PI / 2 );
 
     const controller = renderer.xr.getController(0);
     scene.add(controller);
 
     const placeObject = (event) => {
-      const cone = new THREE.Mesh(coneGeometry, coneMaterial);
-      const pos = new THREE.Vector3();
-      pos.setFromMatrixPosition(controller.matrixWorld);
-      cone.position.copy(pos);
-      scene.add(cone);
+      const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
+      const mesh = new THREE.Mesh( geometry, material );
+      mesh.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld);
+      mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);
+      scene.add(mesh);
     };
 
     controller.addEventListener("select", placeObject);
