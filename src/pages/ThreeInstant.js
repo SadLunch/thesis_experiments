@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
@@ -7,6 +7,7 @@ const ThreeInstant = () => {
   const rendererRef = useRef(null);
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
+  const [arSession, setArSession] = useState(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -31,7 +32,16 @@ const ThreeInstant = () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
-    document.body.appendChild(ARButton.createButton(renderer));
+    const arButton = ARButton.createButton(renderer, {
+      requiredFeatures: ["hit-test"], // Enables touch interaction
+      optionalFeatures: ["dom-overlay"], // Allows UI elements to stay visible
+      domOverlay: { root: document.body }, // Define where the overlay exists
+    });
+  
+    document.body.appendChild(arButton);
+
+    renderer.xr.addEventListener("sessionstart", (event) => setArSession(event));
+    renderer.xr.addEventListener("sessionend", () => setArSession(null));
 
     // Animation Loop
     const animate = () => {
@@ -50,7 +60,6 @@ const ThreeInstant = () => {
     };
   }, []);
 
-  // ✅ Move `spawnCone` OUTSIDE `useEffect`
   const spawnCone = () => {
     if (!sceneRef.current || !cameraRef.current) return;
 
@@ -67,24 +76,27 @@ const ThreeInstant = () => {
   return (
     <div ref={containerRef} className="w-full h-screen bg-black relative">
       {/* Floating Button */}
-      <button
-        onClick={spawnCone} // ✅ Now it works!
-        style={{
-          position: "absolute",
-          bottom: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          padding: "10px 20px",
-          fontSize: "16px",
-          background: "blue",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Spawn Cone
-      </button>
+      {arSession && (
+        <button
+          onClick={spawnCone}
+          style={{
+            position: "absolute",
+            bottom: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            fontSize: "16px",
+            background: "blue",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            zIndex: 1000, // Ensure it's above the AR scene
+          }}
+        >
+          Spawn Cone
+        </button>
+      )}
     </div>
   );
 };
