@@ -82,6 +82,27 @@ const ThreeInstant = () => {
 
   return (
     <div ref={containerRef} className="w-full h-screen bg-black relative">
+      {/* Custom Back button */}
+      {arSession && (
+        <button
+          onClick={exitAR}
+          style={{
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            padding: "10px 15px",
+            fontSize: "16px",
+            background: "red",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            zIndex: 1000,
+          }}
+        >
+          Back
+        </button>
+      )}
       {/* Floating Button */}
       {arSession && (
         <button
