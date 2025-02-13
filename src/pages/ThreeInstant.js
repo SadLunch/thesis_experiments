@@ -133,10 +133,10 @@ const ThreeInstant = () => {
           alt="AR Guide Overlay"
           style={{
             position: "absolute",
-            top: 0,
-            left: 0,
-            width: "auto",
-            height: "auto",
+            top: "50%",
+            left: "50%",
+            /*width: "auto",
+            height: "auto",*/
             opacity: 0.5,
             pointerEvents: "none",
             zIndex: 999,
