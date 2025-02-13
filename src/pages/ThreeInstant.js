@@ -87,18 +87,13 @@ const ThreeInstant = () => {
 
     // Clear the scene
     if (sceneRef.current) {
-        let lights = 0;
-        while (sceneRef.current.children.length - lights > 0) {
-          const object = sceneRef.current.children[0];
-          if (!object.isLight) {
-            if (object.geometry) object.geometry.dispose();
-            if (object.material) object.material.dispose();
-            sceneRef.current.remove(object);
-          } else {
-            lights += 1;
-          }
-          
+      sceneRef.current.children.forEach((object) => {
+        if (!object.isLight) {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) object.material.dispose();
+          sceneRef.current.remove(object);
         }
+      });
     }
 
     if (isAligned) setIsAligned(false);
