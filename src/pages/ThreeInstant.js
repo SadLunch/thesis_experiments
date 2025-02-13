@@ -87,12 +87,15 @@ const ThreeInstant = () => {
 
     // Clear the scene
     if (sceneRef.current) {
-        while (sceneRef.current.children.length > 0) {
+        let lights = 0;
+        while (sceneRef.current.children.length - lights > 0) {
           const object = sceneRef.current.children[0];
           if (!object.isLight) {
             if (object.geometry) object.geometry.dispose();
             if (object.material) object.material.dispose();
             sceneRef.current.remove(object);
+          } else {
+            lights += 1;
           }
           
         }
