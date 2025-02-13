@@ -54,13 +54,14 @@ const ThreeInstant = () => {
       optionalFeatures: ["dom-overlay"], // Allows UI elements to stay visible
       domOverlay: { root: document.body }, // Define where the overlay exists
     });
-  
-      await rendererRef.current.xr.setSession(session);
-      setArSession(true);
 
-      session.addEventListener("end", () => {
+    session.addEventListener("end", () => {
         setArSession(false);
-      })
+    })
+    rendererRef.current.xr.setReferenceSpaceType("local")
+  
+    await rendererRef.current.xr.setSession(session);
+    setArSession(true);
   }
 
   const spawnCone = () => {
