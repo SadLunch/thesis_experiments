@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import imgOverlay from '../assets/peacock.png'
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
 const ThreeInstant = () => {
@@ -88,9 +89,12 @@ const ThreeInstant = () => {
     if (sceneRef.current) {
         while (sceneRef.current.children.length > 0) {
           const object = sceneRef.current.children[0];
-          if (object.geometry) object.geometry.dispose();
-          if (object.material) object.material.dispose();
-          sceneRef.current.remove(object);
+          if (!object.isLight) {
+            if (object.geometry) object.geometry.dispose();
+            if (object.material) object.material.dispose();
+            sceneRef.current.remove(object);
+          }
+          
         }
     }
 
@@ -125,7 +129,7 @@ const ThreeInstant = () => {
       {/* Alignment image */}
       {arSession && !isAligned && (
         <img
-          src="assets/peacock.png"
+          src={imgOverlay}
           alt="AR Guide Overlay"
           style={{
             position: "absolute",
