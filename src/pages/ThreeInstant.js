@@ -8,6 +8,7 @@ const ThreeInstant = () => {
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
   const [arSession, setArSession] = useState(false);
+  const [isAligned, setIsAligned] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -64,7 +65,7 @@ const ThreeInstant = () => {
     setArSession(true);
   }
 
-  const spawnCone = () => {
+  const alignScene = () => {
     if (!sceneRef.current || !cameraRef.current) return;
 
     const geometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
@@ -75,11 +76,23 @@ const ThreeInstant = () => {
     mesh.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
     sceneRef.current.add(mesh);
+
+    setIsAligned(true);
   };
 
   const exitAR = () => {
     const session = rendererRef.current?.xr.getSession();
     if (session) session.end();
+
+    // Clear the scene
+    if (sceneRef.current) {
+        while (sceneRef.current.children.length > 0) {
+          const object = sceneRef.current.children[0];
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) object.material.dispose();
+          sceneRef.current.remove(object);
+        }
+    }
   }
 
   return (
@@ -107,6 +120,24 @@ const ThreeInstant = () => {
         </button>
       )}
 
+      {/* Alignment image */}
+      {arSession && !isAligned && (
+        <img
+          src="../assets/peacock.png"
+          alt="AR Guide Overlay"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            opacity: 0.5,
+            pointerEvents: "none",
+            zIndex: 999,
+          }}
+        />
+      )}
+
       {/* Custom Back button */}
       {arSession && (
         <button
@@ -129,9 +160,9 @@ const ThreeInstant = () => {
         </button>
       )}
       {/* Floating Button */}
-      {arSession && (
+      {arSession && !isAligned && (
         <button
-          onClick={spawnCone}
+          onClick={alignScene}
           style={{
             position: "absolute",
             bottom: "20px",
@@ -147,7 +178,7 @@ const ThreeInstant = () => {
             zIndex: 1000, // Ensure it's above the AR scene
           }}
         >
-          Spawn Cone
+          Align Scene
         </button>
       )}
     </div>
