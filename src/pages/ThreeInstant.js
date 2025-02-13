@@ -93,6 +93,8 @@ const ThreeInstant = () => {
           sceneRef.current.remove(object);
         }
     }
+
+    if (isAligned) setIsAligned(false);
   }
 
   return (
@@ -123,7 +125,7 @@ const ThreeInstant = () => {
       {/* Alignment image */}
       {arSession && !isAligned && (
         <img
-          src="../assets/peacock.png"
+          src="assets/peacock.png"
           alt="AR Guide Overlay"
           style={{
             position: "absolute",
