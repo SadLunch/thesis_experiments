@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import imgOverlay from '../assets/peacock.png'
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
 const ThreeInstant = () => {
@@ -69,16 +70,40 @@ const ThreeInstant = () => {
   const alignScene = () => {
     if (!sceneRef.current || !cameraRef.current) return;
 
-    const geometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
-    const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() });
-    const mesh = new THREE.Mesh(geometry, material);
+    // Create the object
+    // const geometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
+    // const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() });
+    // const model = new THREE.Mesh(geometry, material);
 
-    mesh.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
-    mesh.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
+    // Adding a model
+    const loader = GLTFLoader();
+    loader.load(
+      "/assets/scene.gltf",
+      (gltf) => {
+        const model = gltf.scene;
+        model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
+        model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
-    sceneRef.current.add(mesh);
+        sceneRef.current.add(model);
 
-    setIsAligned(true);
+        setIsAligned(true);
+      },
+      (xhr) => { console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% loaded`); },
+      (error) => { console.log('Error loading modle:', error); }
+    );
+
+    /**
+     * position.set receives 3 values (x, y, z)
+     * +x is to the right -x is to the left
+     * +y is up -y is down
+     * +z is behind the person -z is in front of the person
+     */
+    // model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
+    // model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
+
+    // sceneRef.current.add(model);
+
+    // setIsAligned(true);
   };
 
   const exitAR = () => {
