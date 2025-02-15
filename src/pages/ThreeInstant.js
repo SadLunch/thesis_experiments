@@ -76,7 +76,7 @@ const ThreeInstant = () => {
     // const model = new THREE.Mesh(geometry, material);
 
     // Adding a model
-    const loader = GLTFLoader();
+    const loader = new GLTFLoader();
     loader.load(
       "/assets/scene.gltf",
       (gltf) => {
