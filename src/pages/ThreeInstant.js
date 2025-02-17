@@ -128,7 +128,7 @@ const ThreeInstant = () => {
     touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(touchPoint, cameraRef.current);
-    const intersects = raycaster.intersectObjects(sceneRef.children, true);
+    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
     if (intersects.length > 0) selectedObject = intersects[0].object;
   };
@@ -140,7 +140,7 @@ const ThreeInstant = () => {
     touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(touchPoint, cameraRef.current);
-    const intersects = raycaster.intersectObjects(sceneRef.children, true);
+    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
     if (intersects.length > 0) selectedObject.position.copy(intersects[0].point);
   };
