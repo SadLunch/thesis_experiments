@@ -9,6 +9,7 @@ import { Vector2 } from "three";
 const raycaster = new Raycaster();
 const touchPoint = new Vector2();
 let selectedObject = null;
+let isMoving = false;
 
 const ThreeInstant = () => {
   const containerRef = useRef(null);
@@ -50,6 +51,10 @@ const ThreeInstant = () => {
       renderer.setAnimationLoop(() => {
         renderer.render(scene, camera);
       });
+      if (isMoving) {
+        renderer.render(scene, camera);
+        isMoving = false;
+      }
     };
 
     animate();
@@ -135,6 +140,7 @@ const ThreeInstant = () => {
 
   const handleDrag = (event) => {
     if (!sceneRef.current || !cameraRef.current || !selectedObject) return;
+    isMoving = true;
 
     touchPoint.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
     touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
@@ -143,8 +149,6 @@ const ThreeInstant = () => {
     const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
     if (intersects.length > 0) selectedObject.position.copy(intersects[0].point);
-
-    rendererRef.current.render(sceneRef.current, cameraRef.current);
   };
 
   const handleTouchEnd = () => {
