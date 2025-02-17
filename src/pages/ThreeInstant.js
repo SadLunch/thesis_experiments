@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import imgOverlay from '../assets/peacock.png'
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
+// import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { Raycaster } from "three";
 import { Vector2 } from "three";
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
