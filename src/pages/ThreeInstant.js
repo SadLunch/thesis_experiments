@@ -2,7 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import imgOverlay from '../assets/peacock.png'
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import { Raycaster } from "three";
+import { Vector2 } from "three";
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
+
+const raycaster = new Raycaster();
+const touchPoint = new Vector2();
+let selectedObject = null;
 
 const ThreeInstant = () => {
   const containerRef = useRef(null);
@@ -35,6 +41,10 @@ const ThreeInstant = () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleDrag);
+    window.addEventListener('touchend', handleTouchEnd);
+
     // Animation Loop
     const animate = () => {
       renderer.setAnimationLoop(() => {
@@ -45,6 +55,10 @@ const ThreeInstant = () => {
     animate();
 
     return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleDrag);
+      window.removeEventListener('touchend', handleTouchEnd);
+
       renderer.setAnimationLoop(null);
       if (container) {
         container.removeChild(renderer.domElement);
@@ -105,6 +119,35 @@ const ThreeInstant = () => {
 
     // setIsAligned(true);
   };
+
+  const handleTouchStart = (event) => {
+    if (!sceneRef.current || !cameraRef.current) return;
+
+    // Normalize touch position
+    touchPoint.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+    touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(touchPoint, cameraRef.current);
+    const intersects = raycaster.intersectObjects(sceneRef.children, true);
+
+    if (intersects.length > 0) selectedObject = intersects[0].object;
+  };
+
+  const handleDrag = (event) => {
+    if (!sceneRef.current || !cameraRef.current || !selectedObject) return;
+
+    touchPoint.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+    touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(touchPoint, cameraRef.current);
+    const intersects = raycaster.intersectObjects(sceneRef.children, true);
+
+    if (intersects.length > 0) selectedObject.position.copy(intersects[0].point);
+  };
+
+  const handleTouchEnd = () => {
+    selectedObject = null;
+  }
 
   const exitAR = () => {
     const session = rendererRef.current?.xr.getSession();
