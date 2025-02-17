@@ -143,6 +143,8 @@ const ThreeInstant = () => {
     const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
     if (intersects.length > 0) selectedObject.position.copy(intersects[0].point);
+
+    rendererRef.current.render(sceneRef.current, cameraRef.current);
   };
 
   const handleTouchEnd = () => {
