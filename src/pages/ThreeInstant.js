@@ -199,7 +199,7 @@ const ThreeInstant = () => {
         model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
         model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
-        group.add(model);
+        group.add(model.children);
 
         setIsAligned(true);
       },
