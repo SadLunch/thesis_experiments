@@ -145,7 +145,7 @@ const ThreeInstant = () => {
 
     raycaster.setFromCamera(touchPoint, cameraRef.current);
 
-    const plane = THREE.Plane(new THREE.Vector3(0,0,1), -selectedObject.position.z);
+    const plane = new THREE.Plane(new THREE.Vector3(0,0,1), -selectedObject.position.z);
     const intersectionPlane = new THREE.Vector3();
 
     if (raycaster.ray.intersectPlane(plane, intersectionPlane)) {
