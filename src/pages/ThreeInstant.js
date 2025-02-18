@@ -140,11 +140,10 @@ const ThreeInstant = () => {
 
     // Animation Loop
     const animate = () => {
-      cleanIntersected();
-
-      intersectObjects(controller);
-
       renderer.setAnimationLoop(() => {
+        cleanIntersected();
+
+        intersectObjects(controller);
         renderer.render(scene, camera);
       });
       // if (isMoving) {
