@@ -199,7 +199,15 @@ const ThreeInstant = () => {
         model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
         model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
-        group = model;
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+
+        group.add(model);
 
         setIsAligned(true);
       },
