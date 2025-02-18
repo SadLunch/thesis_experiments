@@ -206,7 +206,7 @@ const ThreeInstant = () => {
         //   }
         // });
 
-        sceneRef.add(model);
+        sceneRef.current.add(model);
 
         setIsAligned(true);
       },
