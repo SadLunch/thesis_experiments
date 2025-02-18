@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import imgOverlay from '../assets/peacock.png'
 // import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import { Raycaster } from "three";
-import { Vector2 } from "three";
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
-const raycaster = new Raycaster();
-const touchPoint = new Vector2();
+const raycaster = new THREE.Raycaster();
+const touchPoint = new THREE.Vector2();
 let selectedObject = null;
 let isMoving = false;
 
@@ -146,9 +144,17 @@ const ThreeInstant = () => {
     touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(touchPoint, cameraRef.current);
-    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
-    if (intersects.length > 0) selectedObject.position.copy(intersects[0].point);
+    const plane = THREE.Plane(new THREE.Vector3(0,0,1), -selectedObject.position.z);
+    const intersectionPlane = new THREE.Vector3();
+
+    if (raycaster.ray.intersectPlane(plane, intersectionPlane)) {
+      selectedObject.position.set(intersectionPlane.x, intersectionPlane.y, intersectionPlane.z)
+    }
+
+    // const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
+
+    // if (intersects.length > 0) selectedObject.position.copy(intersects[0].point);
   };
 
   const handleTouchEnd = () => {
