@@ -144,17 +144,12 @@ const ThreeInstant = () => {
     touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(touchPoint, cameraRef.current);
+    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
-    const plane = new THREE.Plane(new THREE.Vector3(0,0,1), -selectedObject.position.z);
-    const intersectionPlane = new THREE.Vector3();
-
-    if (raycaster.ray.intersectPlane(plane, intersectionPlane)) {
-      selectedObject.position.set(intersectionPlane.x, intersectionPlane.y, intersectionPlane.z)
+    if (intersects.length > 0) {
+      selectedObject.position.copy(intersects[0].point);
+      selectedObject.position.z = Math.max(-2, Math.min(selectedObject.position.z, -0.1)); // Limit the range at which the object can move in the z-axis (from -2 to -0.1 in front of the camera)
     }
-
-    // const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
-
-    // if (intersects.length > 0) selectedObject.position.copy(intersects[0].point);
   };
 
   const handleTouchEnd = () => {
