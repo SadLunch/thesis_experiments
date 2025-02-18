@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import imgOverlay from '../assets/peacock.png'
-import { XRControllerModelFactory } from "three/examples/jsm/Addons.js";
+// import { XRControllerModelFactory } from "three/examples/jsm/Addons.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
 const raycaster = new THREE.Raycaster();
-// const touchPoint = new THREE.Vector2();
-// let selectedObject = null;
-// let isMoving = false;
-let controller, controllerGrip, group;
-let intersected = [];
+const touchPoint = new THREE.Vector2();
+let selectedObject = null;
+let isMoving = false;
+// let controller, controllerGrip, group;
+// let intersected = [];
 
 const ThreeInstant = () => {
   const containerRef = useRef(null);
@@ -43,121 +43,121 @@ const ThreeInstant = () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
-    // Group of objects in the scene
-    group = new THREE.Group();
-    scene.add(group);
+    // // Group of objects in the scene
+    // group = new THREE.Group();
+    // scene.add(group);
 
-    // Controllers
-    controller = renderer.xr.getController(0);
-    controller.addEventListener('selectstart', handleStart);
-    controller.addEventListener('selectend', handleEnd);
-    scene.add(controller);
+    // // Controllers
+    // controller = renderer.xr.getController(0);
+    // controller.addEventListener('selectstart', handleStart);
+    // controller.addEventListener('selectend', handleEnd);
+    // scene.add(controller);
 
-    //Controller Grip (idk it was in the examples of Three.js)
-    const controllerModelFactory = new XRControllerModelFactory();
+    // //Controller Grip (idk it was in the examples of Three.js)
+    // const controllerModelFactory = new XRControllerModelFactory();
 
-    controllerGrip = renderer.xr.getControllerGrip(0);
-    controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
-    scene.add(controllerGrip);
+    // controllerGrip = renderer.xr.getControllerGrip(0);
+    // controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
+    // scene.add(controllerGrip);
 
-    const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
+    // const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
 
-    const line = new THREE.Line( geometry );
-    line.name = 'line';
-    line.scale.z = 5;
+    // const line = new THREE.Line( geometry );
+    // line.name = 'line';
+    // line.scale.z = 5;
 
-    controller.add( line.clone() );
+    // controller.add( line.clone() );
 
-    // window.addEventListener('touchstart', handleTouchStart);
-    // window.addEventListener('touchmove', handleDrag);
-    // window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleDrag);
+    window.addEventListener('touchend', handleTouchEnd);
 
-    function handleStart(event) {
-      const controller = event.target;
+    // function handleStart(event) {
+    //   const controller = event.target;
   
-      const intersections = getIntersections(controller);
+    //   const intersections = getIntersections(controller);
   
-      if (intersections.length > 0) {
-        const intersection = intersections[0];
+    //   if (intersections.length > 0) {
+    //     const intersection = intersections[0];
   
-        const object = intersection.object;
-        object.material.emissive.b = 1;
-        controller.attach(object);
+    //     const object = intersection.object;
+    //     object.material.emissive.b = 1;
+    //     controller.attach(object);
   
-        controller.userData.selected = object;
-      }
-    };
+    //     controller.userData.selected = object;
+    //   }
+    // };
   
-    function handleEnd(event) {
-      const controller = event.target;
+    // function handleEnd(event) {
+    //   const controller = event.target;
   
-      if (controller.userData.selected !== undefined) {
-        const object = controller.userData.selected;
-        object.material.emissive.b = 0;
-        group.attach(object);
+    //   if (controller.userData.selected !== undefined) {
+    //     const object = controller.userData.selected;
+    //     object.material.emissive.b = 0;
+    //     group.attach(object);
   
-        controller.userData.selected = undefined;
-      }
-    };
+    //     controller.userData.selected = undefined;
+    //   }
+    // };
   
-    function getIntersections(controller) {
-      controller.updateMatrixWorld();
-      raycaster.setFromXRController(controller);
-      return raycaster.intersectObjects(group.children, false);
-    }
+    // function getIntersections(controller) {
+    //   controller.updateMatrixWorld();
+    //   raycaster.setFromXRController(controller);
+    //   return raycaster.intersectObjects(group.children, false);
+    // }
   
-    function intersectObjects(controller) {
-      if (controller.userData.targetRayMode === 'screen') return;
+    // function intersectObjects(controller) {
+    //   if (controller.userData.targetRayMode === 'screen') return;
   
-      if (controller.userData.selected !== undefined) return;
+    //   if (controller.userData.selected !== undefined) return;
   
-      const line = controller.getObjectByName( 'line' );
-      const intersections = getIntersections( controller );
+    //   const line = controller.getObjectByName( 'line' );
+    //   const intersections = getIntersections( controller );
   
-      if ( intersections.length > 0 ) {
+    //   if ( intersections.length > 0 ) {
   
-        const intersection = intersections[ 0 ];
+    //     const intersection = intersections[ 0 ];
   
-        const object = intersection.object;
-        object.material.emissive.r = 1;
-        intersected.push( object );
+    //     const object = intersection.object;
+    //     object.material.emissive.r = 1;
+    //     intersected.push( object );
   
-        line.scale.z = intersection.distance;
+    //     line.scale.z = intersection.distance;
   
-      } else {
+    //   } else {
   
-        line.scale.z = 5;
+    //     line.scale.z = 5;
   
-      }
-    }
+    //   }
+    // }
   
-    function cleanIntersected() {
-      while (intersected.length) {
-        const object = intersected.pop();
-        object.material.emissive.r = 0;
-      }
-    }
+    // function cleanIntersected() {
+    //   while (intersected.length) {
+    //     const object = intersected.pop();
+    //     object.material.emissive.r = 0;
+    //   }
+    // }
 
     // Animation Loop
     const animate = () => {
       renderer.setAnimationLoop(() => {
-        cleanIntersected();
+        // cleanIntersected();
 
-        intersectObjects(controller);
+        // intersectObjects(controller);
         renderer.render(scene, camera);
       });
-      // if (isMoving) {
-      //   renderer.render(scene, camera);
-      //   isMoving = false;
-      // }
+      if (isMoving) {
+        renderer.render(scene, camera);
+        isMoving = false;
+      }
     };
 
     animate();
 
     return () => {
-      // window.removeEventListener('touchstart', handleTouchStart);
-      // window.removeEventListener('touchmove', handleDrag);
-      // window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleDrag);
+      window.removeEventListener('touchend', handleTouchEnd);
 
       renderer.setAnimationLoop(null);
       if (container) {
@@ -198,15 +198,15 @@ const ThreeInstant = () => {
         model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
         model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
-        model.traverse((child) => {
-          if (child.isMesh) {
-            child.material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
+        // model.traverse((child) => {
+        //   if (child.isMesh) {
+        //     child.material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+        //     child.castShadow = true;
+        //     child.receiveShadow = true;
+        //   }
+        // });
 
-        group.add(model);
+        sceneRef.add(model);
 
         setIsAligned(true);
       },
@@ -230,37 +230,37 @@ const ThreeInstant = () => {
 
   
 
-  // const handleTouchStart = (event) => {
-  //   if (!sceneRef.current || !cameraRef.current) return;
+  const handleTouchStart = (event) => {
+    if (!sceneRef.current || !cameraRef.current) return;
 
-  //   // Normalize touch position
-  //   touchPoint.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-  //   touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+    // Normalize touch position
+    touchPoint.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+    touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
-  //   raycaster.setFromCamera(touchPoint, cameraRef.current);
-  //   const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
+    raycaster.setFromCamera(touchPoint, cameraRef.current);
+    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
-  //   if (intersects.length > 0) selectedObject = intersects[0].object;
-  // };
+    if (intersects.length > 0) selectedObject = intersects[0].object;
+  };
 
-  // const handleDrag = (event) => {
-  //   if (!sceneRef.current || !cameraRef.current || !selectedObject) return;
-  //   isMoving = true;
+  const handleDrag = (event) => {
+    if (!sceneRef.current || !cameraRef.current || !selectedObject) return;
+    isMoving = true;
 
-  //   touchPoint.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-  //   touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+    touchPoint.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+    touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
-  //   raycaster.setFromCamera(touchPoint, cameraRef.current);
-  //   const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
+    raycaster.setFromCamera(touchPoint, cameraRef.current);
+    const intersects = raycaster.intersectObjects(sceneRef.current.children, false);
 
-  //   if (intersects.length > 0) {
-  //     selectedObject.position.copy(intersects[0].point.x, intersects[0].point.y, selectedObject.position.z);
-  //   }
-  // };
+    if (intersects.length > 0) {
+      selectedObject.position.copy(intersects[0].point.x, intersects[0].point.y, selectedObject.position.z);
+    }
+  };
 
-  // const handleTouchEnd = () => {
-  //   selectedObject = null;
-  // }
+  const handleTouchEnd = () => {
+    selectedObject = null;
+  }
 
   const exitAR = () => {
     const session = rendererRef.current?.xr.getSession();
