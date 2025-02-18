@@ -147,8 +147,7 @@ const ThreeInstant = () => {
     const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
 
     if (intersects.length > 0) {
-      selectedObject.position.copy(intersects[0].point);
-      selectedObject.position.z = Math.max(-2, Math.min(selectedObject.position.z, -0.1)); // Limit the range at which the object can move in the z-axis (from -2 to -0.1 in front of the camera)
+      selectedObject.position.copy(intersects[0].point.x, intersects[0].point.y, selectedObject.position.z);
     }
   };
 
