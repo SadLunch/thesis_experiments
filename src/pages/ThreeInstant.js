@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import imgOverlay from '../assets/peacock.png'
 import { XRControllerModelFactory } from "three/examples/jsm/Addons.js";
-// import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
 
 const raycaster = new THREE.Raycaster();
@@ -185,27 +185,27 @@ const ThreeInstant = () => {
   const alignScene = () => {
     if (!sceneRef.current || !cameraRef.current) return;
 
-    // Create the object
-    const geometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
-    const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() });
-    const model = new THREE.Mesh(geometry, material);
+    // // Create the object
+    // const geometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
+    // const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() });
+    // const model = new THREE.Mesh(geometry, material);
 
-    // // Adding a model
-    // const loader = new GLTFLoader();
-    // loader.load(
-    //   "/assets/scene.gltf",
-    //   (gltf) => {
-    //     const model = gltf.scene;
-    //     model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
-    //     model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
+    // Adding a model
+    const loader = new GLTFLoader();
+    loader.load(
+      "/assets/scene.gltf",
+      (gltf) => {
+        const model = gltf.scene;
+        model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
+        model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
-    //     sceneRef.current.add(model);
+        group.add(model);
 
-    //     setIsAligned(true);
-    //   },
-    //   (xhr) => { console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% loaded`); },
-    //   (error) => { console.log('Error loading modle:', error); }
-    // );
+        setIsAligned(true);
+      },
+      (xhr) => { console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% loaded`); },
+      (error) => { console.log('Error loading modle:', error); }
+    );
 
     /**
      * position.set receives 3 values (x, y, z)
@@ -213,12 +213,12 @@ const ThreeInstant = () => {
      * +y is up -y is down
      * +z is behind the person -z is in front of the person
      */
-    model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
-    model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
+    // model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
+    // model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
-    group.add(model);
+    // group.add(model);
 
-    setIsAligned(true);
+    // setIsAligned(true);
   };
 
   
