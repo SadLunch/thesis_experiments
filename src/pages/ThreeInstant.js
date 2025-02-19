@@ -192,7 +192,7 @@ const ThreeInstant = () => {
     // Adding a model
     const loader = new GLTFLoader();
     loader.load(
-      "/assets/scene.gltf",
+      "/assets/saturn_desk_lamp.glb",
       (gltf) => {
         const model = gltf.scene;
         model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
