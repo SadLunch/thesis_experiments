@@ -10,7 +10,7 @@ const raycaster = new THREE.Raycaster();
 // let selectedObject = null;
 // let isMoving = false;
 // let controller, controllerGrip, group;
-// let intersected = [];
+let intersected = [];
 
 const ThreeInstant = () => {
   const containerRef = useRef(null);
@@ -78,6 +78,7 @@ const ThreeInstant = () => {
         const intersection = intersections[0];
     
         intersection.object.material.emissive.r = 1;
+        cleanIntersected.push(intersection.object);
         line.scale.z = intersection.distance;
       } else {
         line.scale.z = 5;
@@ -224,9 +225,10 @@ const ThreeInstant = () => {
   
   
   function cleanIntersected() {
-    groupRef.current.children.forEach((object) => {
+    while (intersected.length) {
+      const object = intersected.pop();
       object.material.emissive.r = 0;
-    });
+    }
   }
 
   // const handleTouchStart = (event) => {
