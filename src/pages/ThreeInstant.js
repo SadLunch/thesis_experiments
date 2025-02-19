@@ -169,7 +169,7 @@ const ThreeInstant = () => {
     loader.load(
       "/assets/saturn_desk_lamp.glb",
       (gltf) => {
-        const model = gltf.scene;
+        const model = gltf.scene.children[0];
         model.position.set(0, 0, -0.3).applyMatrix4(cameraRef.current.matrixWorld);
         model.quaternion.setFromRotationMatrix(cameraRef.current.matrixWorld);
 
