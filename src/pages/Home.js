@@ -6,7 +6,7 @@ import "./Home.css";
 
 const experiments = [
   { id: 1, title: "Three.js WebXR Experiment", description: "Uses Three.sj with WebXR API for 'Instant Tracking' of cones in 3D space", path: "/three_instant_tracking" },
-  { id: 2, title: "Experiment 2", description: "Description for experiment 2", path: "/experiment2" },
+  { id: 2, title: "Experiment 2", description: "Description for experiment 2", path: "/second_experience" },
 ];
 
 const Home = () => {
