@@ -17,6 +17,7 @@ const ThreeInstant = () => {
   const rendererRef = useRef(null);
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
+  const groupRef = useRef(null);
   const [arSession, setArSession] = useState(false);
   const [isAligned, setIsAligned] = useState(false);
 
@@ -43,9 +44,10 @@ const ThreeInstant = () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
-    // // Group of objects in the scene
-    // group = new THREE.Group();
-    // scene.add(group);
+    // Group of objects in the scene
+    const group = new THREE.Group();
+    groupRef.current = group;
+    scene.add(group);
 
     // // Controllers
     // controller = renderer.xr.getController(0);
@@ -206,7 +208,7 @@ const ThreeInstant = () => {
         //   }
         // });
 
-        sceneRef.current.add(model);
+        groupRef.current.add(model);
 
         setIsAligned(true);
       },
@@ -238,7 +240,7 @@ const ThreeInstant = () => {
     touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(touchPoint, cameraRef.current);
-    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
+    const intersects = raycaster.intersectObjects(groupRef.current.children, true);
 
     if (intersects.length > 0) selectedObject = intersects[0].object;
   };
@@ -251,10 +253,10 @@ const ThreeInstant = () => {
     touchPoint.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(touchPoint, cameraRef.current);
-    const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
+    const intersects = raycaster.intersectObjects(groupRef.current.children, true);
 
     if (intersects.length > 0) {
-      selectedObject.position.copy(intersects[0].point.x, intersects[0].point.y, selectedObject.position.z);
+      selectedObject.position.copy(intersects[0].point);
     }
   };
 
