@@ -78,7 +78,7 @@ const ThreeInstant = () => {
         const intersection = intersections[0];
     
         intersection.object.material.emissive.r = 1;
-        cleanIntersected.push(intersection.object);
+        intersected.push(intersection.object);
         line.scale.z = intersection.distance;
       } else {
         line.scale.z = 5;
