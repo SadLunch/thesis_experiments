@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import imgOverlay from '../assets/peacock.png'
+//import imgOverlay from '../assets/peacock.png'
 import imgOverlay1 from '../assets/Hiro_marker_ARjs.png'
 import { XRControllerModelFactory } from "three/examples/jsm/Addons.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
