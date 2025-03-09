@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import imgOverlay from '../assets/peacock.png'
+import imgOverlay1 from '../assets/Hiro_marker_ARjs.png'
 import { XRControllerModelFactory } from "three/examples/jsm/Addons.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 // import { ARButton } from "three/examples/jsm/webxr/ARButton";
@@ -264,9 +265,6 @@ const ThreeInstant = () => {
   // }
 
   const exitAR = () => {
-    const session = rendererRef.current?.xr.getSession();
-    if (session) session.end();
-
     // Clear the scene
     if (sceneRef.current) {
       sceneRef.current.children.forEach((object) => {
@@ -277,6 +275,8 @@ const ThreeInstant = () => {
         }
       });
     }
+    const session = rendererRef.current?.xr.getSession();
+    if (session) session.end();
 
     if (isAligned) setIsAligned(false);
   }
@@ -309,15 +309,14 @@ const ThreeInstant = () => {
       {/* Alignment image */}
       {arSession && !isAligned && (
         <img
-          src={imgOverlay}
+          src={imgOverlay1}
           alt="AR Guide Overlay"
           style={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            /*width: "auto",
-            height: "auto",*/
+            width: "50%",
             opacity: 0.5,
             pointerEvents: "none",
             zIndex: 999,
